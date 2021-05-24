@@ -158,7 +158,8 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("given_regex",given_regex))
 
     # Start the Bot
-    Updater.start_polling()
+    updater.start_polling()
+
     # updater.start_webhook(listen="0.0.0.0",
     #                       port=int(PORT),
     #                       url_path=TOKEN)
