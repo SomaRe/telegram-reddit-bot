@@ -1,0 +1,1 @@
+web: python3 telegram-reddit-bot.py
