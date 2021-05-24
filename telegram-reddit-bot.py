@@ -10,7 +10,7 @@ import os
 TOKEN = keys.TELE_TOKEN
 
 # global subred_name, regex, interval
-PORT = int(os.environ.get('PORT', 5000))
+PORT = int(os.environ.get('PORT', '8443'))
 subred_name = "CanadianHardwareSwap"
 regex = "[\d]{4,5}"
 interval = 300
@@ -161,9 +161,9 @@ def main():
     # updater.start_polling()
 
     updater.start_webhook(listen="0.0.0.0",
-                          port=int(PORT),
-                          url_path=TOKEN)
-    updater.bot.setWebhook(keys.heroku_url + TOKEN)
+                          port=PORT,
+                          url_path=TOKEN,
+                          webhook_url=keys.heroku_url + TOKEN)
 
     # Block until you press Ctrl-C or the process receives SIGINT, SIGTERM or
     # SIGABRT. This should be used most of the time, since start_polling() is
