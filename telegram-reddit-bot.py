@@ -143,8 +143,6 @@ def main():
 
     
     # on different commands - answer in Telegram
-    # dispatcher.add_handler(CommandHandler("start", start))
-    # dispatcher.add_handler(CommandHandler("search", search))
 
     dispatcher.add_handler(CommandHandler("start",start))
     dispatcher.add_handler(CommandHandler("subreddit_name",subreddit_name))
