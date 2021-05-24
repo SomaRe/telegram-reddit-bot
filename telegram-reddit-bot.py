@@ -133,7 +133,7 @@ def given_interval(update:Update, _: CallbackContext):
 def given_regex(update:Update, context: CallbackContext):
     update.message.reply_text("Regex given: "+ regex)
 
-def main() -> None:
+def main():
     """Run bot."""
     # Create the Updater and pass it your bot's token.
     updater = Updater(TOKEN)
