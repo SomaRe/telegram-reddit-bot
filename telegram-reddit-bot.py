@@ -73,6 +73,19 @@ def get_from_reddit(context: CallbackContext):
     global last_post_time, last_post_time_available
     job = context.job
     current_time = int(time.time())
+    for submission in reddit.subreddit(subred_name).new(limit=None):
+        if(submission.created_utc > last_post_time):
+            if submission.link_flair_text == "Selling" and greater_than_num(regex,submission.title):
+                last_post_time = submission.created_utc
+                context.bot.send_message(job.context,text=submission.url)
+        else:
+            break
+
+
+def search(update:Update, context: CallbackContext):
+    chat_id = update.message.chat_id
+    job = context.job
+    global last_post_time, last_post_time_available
     if(last_post_time_available == False):
         for submission in reddit.subreddit(subred_name).new(limit=None):
             if submission.link_flair_text == "Selling" and greater_than_num(regex,submission.title):
@@ -81,18 +94,7 @@ def get_from_reddit(context: CallbackContext):
                 context.bot.send_message(job.context, text = submission.url)
                 break
     else:
-        for submission in reddit.subreddit(subred_name).new(limit=None):
-            if submission.link_flair_text == "Selling" and greater_than_num(regex,submission.title):
-                if(submission.created_utc > last_post_time):
-                    last_post_time = submission.created_utc
-                    context.bot.send_message(job.context,text=submission.url)
-                else:
-                    break
-
-
-def search(update:Update, context: CallbackContext):
-    chat_id = update.message.chat_id
-    context.job_queue.run_repeating(get_from_reddit, interval , context=chat_id)
+        context.job_queue.run_repeating(get_from_reddit, interval , context=chat_id)
 
 
 def start(update: Update, _: CallbackContext):
