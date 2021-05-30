@@ -60,13 +60,16 @@ Use command /given_regex to see the regex given
 There are default values for above, but do check spellings and etc if doesn't work!
     ''')
 
-def greater_than_num(regex,title):
+            
+def parameter_search(regex,title):
     l = re.findall(regex,title)
     for i in l:
         if(int(i) >= 3600 ):
             return True
+    if(title.find("cpu")!=-1 or title.find("without")!=-1 or title.find("pc")!=-1):
+        return True
     return False
-            
+
 
 
 def get_from_reddit(context: CallbackContext):
@@ -75,7 +78,7 @@ def get_from_reddit(context: CallbackContext):
     current_time = int(time.time())
     if(last_post_time_available == False):
         for submission in reddit.subreddit(subred_name).new(limit=None):
-            if submission.link_flair_text == "Selling" and greater_than_num(regex,submission.title):
+            if submission.link_flair_text == "Selling" and parameter_search(regex,submission.title):
                 last_post_time = submission.created_utc
                 last_post_time_available = True
                 context.bot.send_message(job.context, text = submission.url)
