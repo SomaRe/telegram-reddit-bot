@@ -16,7 +16,7 @@ regex = "[\d]{4,5}"
 interval = 300
 last_post_time_available = False
 last_post_time = 0
-
+parameters = []
 
 
 reddit = praw.Reddit(
@@ -57,6 +57,12 @@ Use command /given_interval to see the internal set
 
 Use command /given_regex to see the regex given
 
+Use command /add-parameters to add more parameters
+
+Use command /given_parameters to see the parameters given
+
+Use command /delete_parameters to delete all parameters
+
 There are default values for above, but do check spellings and etc if doesn't work!
     ''')
 
@@ -66,10 +72,10 @@ def parameter_search(regex,title):
     for i in l:
         if(int(i) >= 3600 ):
             return True
-    if(title.find("cpu")!=-1 or title.find("without")!=-1 or title.find("pc")!=-1):
-        return True
+    for j in parameters:
+        if(title.find(j)!=-1):
+            return True
     return False
-
 
 
 def get_from_reddit(context: CallbackContext):
@@ -101,6 +107,10 @@ def search(update:Update, context: CallbackContext):
 def start(update: Update, _: CallbackContext):
     update.message.reply_text('Hi! give use command /instructions to see how to set the bot rady for action')
 
+def add_parameters(update:Update, context: CallbackContext):
+    global parameters
+    for i in range(len(context.args)):
+        parameters.append(context.args[i].lower())
 
 def subreddit_name(update:Update, context: CallbackContext):
     global subred_name
@@ -136,6 +146,14 @@ def given_interval(update:Update, _: CallbackContext):
 def given_regex(update:Update, context: CallbackContext):
     update.message.reply_text("Regex given: "+ regex)
 
+def given_parameters(update:Update, context: CallbackContext):
+    update.message.reply_text("given parameters: "+ ", ".join(parameters))
+
+def delete_parameters(update:Update, context: CallbackContext):
+    global parameters
+    parameters.clear()
+    update.message.reply_text("All parameters cleared")
+
 def main():
     """Run bot."""
     # Create the Updater and pass it your bot's token.
@@ -151,12 +169,15 @@ def main():
     dispatcher.add_handler(CommandHandler("subreddit_name",subreddit_name))
     dispatcher.add_handler(CommandHandler("regular_expression", regular_expression))
     dispatcher.add_handler(CommandHandler("set_interval", set_interval))
+    dispatcher.add_handler(CommandHandler("add_parameters",add_parameters))
     dispatcher.add_handler(CommandHandler("startsearch",search))
     dispatcher.add_handler(CommandHandler("stop", stop))
     dispatcher.add_handler(CommandHandler("instructions",help))
     dispatcher.add_handler(CommandHandler("given_subred_name",given_subred_name))
     dispatcher.add_handler(CommandHandler("given_interval",given_interval))
     dispatcher.add_handler(CommandHandler("given_regex",given_regex))
+    dispatcher.add_handler(CommandHandler("given_parameters",given_parameters))
+    dispatcher.add_handler(CommandHandler("delete_parameters",delete_parameters))
 
     # Start the Bot
     updater.start_polling()
