@@ -1,12 +1,9 @@
 import logging
 import praw
-import time
 import re
-
-from praw.reddit import Submission
 import keys
 from telegram import Update
-from telegram.ext import Updater, CommandHandler,  MessageHandler,CallbackContext, JobQueue, commandhandler
+from telegram.ext import Updater, CommandHandler,  CallbackContext
 # import os
 
 TOKEN = keys.TELE_TOKEN
@@ -82,7 +79,6 @@ def parameter_search(regex,title):
 def get_from_reddit(context: CallbackContext):
     global last_post_time, last_post_time_available
     job = context.job
-    current_time = int(time.time())
     if(last_post_time_available == False):
         for submission in reddit.subreddit(subred_name).new(limit=None):
             flair = submission.link_flair_text
