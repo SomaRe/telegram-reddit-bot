@@ -2,6 +2,8 @@ import logging
 import praw
 import time
 import re
+
+from praw.reddit import Submission
 import keys
 from telegram import Update
 from telegram.ext import Updater, CommandHandler,  MessageHandler,CallbackContext, JobQueue, commandhandler
@@ -16,8 +18,7 @@ regex = "[\d]{4,5}"
 interval = 300
 last_post_time_available = False
 last_post_time = 0
-parameters = []
-
+parameters = ["cpu","gpu","pc","without","rtx"]
 
 reddit = praw.Reddit(
     client_id=keys.reddit_client_id,
@@ -70,7 +71,7 @@ There are default values for above, but do check spellings and etc if doesn't wo
 def parameter_search(regex,title):
     l = re.findall(regex,title)
     for i in l:
-        if(int(i) >= 3600 ):
+        if(int(i) >= 3000 and int(i) <12000 ):
             return True
     for j in parameters:
         if(title.find(j)!=-1):
@@ -84,15 +85,17 @@ def get_from_reddit(context: CallbackContext):
     current_time = int(time.time())
     if(last_post_time_available == False):
         for submission in reddit.subreddit(subred_name).new(limit=None):
-            if submission.link_flair_text == "Selling" and parameter_search(regex,submission.title):
+            flair = submission.link_flair_text
+            if ((flair == "Selling" or flair == "Selling\Trading") and parameter_search(regex,submission.title)):
                 last_post_time = submission.created_utc
                 last_post_time_available = True
                 context.bot.send_message(job.context, text = submission.url)
                 break
     else:
         for submission in reddit.subreddit(subred_name).new(limit=None):
+            flair = submission.link_flair_text
             if(submission.created_utc > last_post_time):
-                if submission.link_flair_text == "Selling" and greater_than_num(regex,submission.title):
+                if ((flair == "Selling" or flair == "Selling\Trading") and parameter_search(regex,submission.title)):
                     last_post_time = submission.created_utc
                     context.bot.send_message(job.context,text=submission.url)
             else:
@@ -100,17 +103,19 @@ def get_from_reddit(context: CallbackContext):
 
 
 def search(update:Update, context: CallbackContext):
+    update.message.reply_text("Job started!")
     chat_id = update.message.chat_id
     context.job_queue.run_repeating(get_from_reddit, interval , context=chat_id)
 
 
 def start(update: Update, _: CallbackContext):
-    update.message.reply_text('Hi! give use command /instructions to see how to set the bot rady for action')
+    update.message.reply_text('Hi! give use command /instructions to see how to set the bot ready for action')
 
 def add_parameters(update:Update, context: CallbackContext):
     global parameters
     for i in range(len(context.args)):
         parameters.append(context.args[i].lower())
+    update.message.reply_text("currently available parameters: "+" ".join(parameters) )
 
 def subreddit_name(update:Update, context: CallbackContext):
     global subred_name
@@ -181,15 +186,6 @@ def main():
 
     # Start the Bot
     updater.start_polling()
-
-    # updater.start_webhook(listen="0.0.0.0",
-    #                       port=PORT,
-    #                       url_path=TOKEN,
-    #                       webhook_url=keys.heroku_url + TOKEN)
-
-    # Block until you press Ctrl-C or the process receives SIGINT, SIGTERM or
-    # SIGABRT. This should be used most of the time, since start_polling() is
-    # non-blocking and will stop the bot gracefully.
     updater.idle()
 
 
