@@ -12,9 +12,10 @@ TOKEN = keys.TELE_TOKEN
 # PORT = int(os.environ.get('PORT', '8443'))
 subred_name = "CanadianHardwareSwap"
 regex = "[\d]{4,5}"
-interval = 300
+interval = 30
 last_post_time_available = False
 last_post_time = 0
+new_last_post_time = 0
 parameters = ["cpu","gpu","pc","without","rtx"]
 
 reddit = praw.Reddit(
@@ -77,7 +78,7 @@ def parameter_search(regex,title):
 
 
 def get_from_reddit(context: CallbackContext):
-    global last_post_time, last_post_time_available
+    global last_post_time, last_post_time_available, new_last_post_time
     job = context.job
     if(last_post_time_available == False):
         for submission in reddit.subreddit(subred_name).new(limit=None):
@@ -90,18 +91,20 @@ def get_from_reddit(context: CallbackContext):
     else:
         for submission in reddit.subreddit(subred_name).new(limit=None):
             flair = submission.link_flair_text
-            if(submission.created_utc > last_post_time):
+            post_time = submission.created_utc
+            if(post_time > last_post_time):
+                new_last_post_time = post_time
                 if ((flair == "Selling" or flair == "Selling\Trading") and parameter_search(regex,submission.title)):
-                    last_post_time = submission.created_utc
                     context.bot.send_message(job.context,text=submission.url)
             else:
+                last_post_time = new_last_post_time
                 break
 
 
 def search(update:Update, context: CallbackContext):
     update.message.reply_text("Job started!")
     chat_id = update.message.chat_id
-    context.job_queue.run_repeating(get_from_reddit, interval , context=chat_id)
+    context.job_queue.run_repeating(get_from_reddit, interval, first=5,context=chat_id)
 
 
 def start(update: Update, _: CallbackContext):
@@ -165,7 +168,6 @@ def main():
 
     
     # on different commands - answer in Telegram
-
     dispatcher.add_handler(CommandHandler("start",start))
     dispatcher.add_handler(CommandHandler("subreddit_name",subreddit_name))
     dispatcher.add_handler(CommandHandler("regular_expression", regular_expression))
