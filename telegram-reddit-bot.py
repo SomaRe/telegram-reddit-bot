@@ -68,9 +68,8 @@ There are default values for above, but do check spellings and etc if doesn't wo
             
 def parameter_search(regex,title):
     l = re.findall(regex,title)
-    for i in l:
-        if(int(i) >= 3000 and int(i) <12000 ):
-            return True
+    if(len(l)>0):
+        return True
     for j in parameters:
         if(title.find(j)!=-1):
             return True
@@ -90,14 +89,18 @@ def get_from_reddit(context: CallbackContext):
                 break
     else:
         for submission in reddit.subreddit(subred_name).new(limit=None):
+            Arr = []
             flair = submission.link_flair_text
             post_time = submission.created_utc
             if(post_time > last_post_time):
-                new_last_post_time = post_time
                 if ((flair == "Selling" or flair == "Selling\Trading") and parameter_search(regex,submission.title)):
-                    context.bot.send_message(job.context,text=submission.url)
+                    Arr.append([submission.url,post_time])
             else:
-                last_post_time = new_last_post_time
+                Arr.reverse()
+                for link,pt in Arr:
+                    context.bot.send_message(job.context,text=link)
+                if(len(Arr)>0):
+                    last_post_time = Arr[-1][1]
                 break
 
 
