@@ -82,7 +82,7 @@ def get_from_reddit(context: CallbackContext):
     if(last_post_time_available == False):
         for submission in reddit.subreddit(subred_name).new(limit=None):
             flair = submission.link_flair_text
-            if ((flair == "Selling" or flair == "Selling\Trading") and parameter_search(regex,submission.title)):
+            if ((flair == "Selling" or flair == "Selling\Trading") and parameter_search(regex,submission.title.lower())):
                 last_post_time = submission.created_utc
                 last_post_time_available = True
                 context.bot.send_message(job.context, text = submission.url)
@@ -93,7 +93,7 @@ def get_from_reddit(context: CallbackContext):
             flair = submission.link_flair_text
             post_time = submission.created_utc
             if(post_time > last_post_time):
-                if ((flair == "Selling" or flair == "Selling\Trading") and parameter_search(regex,submission.title)):
+                if ((flair == "Selling" or flair == "Selling\Trading") and parameter_search(regex,submission.title.lower())):
                     Arr.append([submission.url,post_time])
             else:
                 Arr.reverse()
