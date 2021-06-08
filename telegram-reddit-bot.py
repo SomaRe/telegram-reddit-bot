@@ -15,7 +15,7 @@ regex = "[\d]{4,5}"
 interval = 300
 last_post_time_available = False
 last_post_time = 0
-new_last_post_time = 0
+# new_last_post_time = 0
 parameters = ["cpu","gpu","pc","without","rtx"]
 
 reddit = praw.Reddit(
@@ -88,8 +88,8 @@ def get_from_reddit(context: CallbackContext):
                 context.bot.send_message(job.context, text = submission.url)
                 break
     else:
+        Arr = []
         for submission in reddit.subreddit(subred_name).new(limit=None):
-            Arr = []
             flair = submission.link_flair_text
             post_time = submission.created_utc
             if(post_time > last_post_time):
