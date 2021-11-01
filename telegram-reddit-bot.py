@@ -38,32 +38,32 @@ logger = logging.getLogger(__name__)
 def help(update: Update, _: CallbackContext):
     update.message.reply_text(''' there are few things to set up before starting search, those are as follows:
 
-Tip: Long press on commands instead of tapping them to edit! 
+    Tip: Long press on commands instead of tapping them to edit! 
 
-Use command /subreddit_name <name of subreddit> example: if subreddit is r/funny, give " /subreddit_name funny " as command
+    Use command /subreddit_name <name of subreddit> example: if subreddit is r/funny, give " /subreddit_name funny " as command
 
-Use command /regular_expression <regex> followed by regex in python format (use regex101.com for help). example: " /regular_expression [\d]{3,4} " 
+    Use command /regular_expression <regex> followed by regex in python format (use regex101.com for help). example: " /regular_expression [\d]{3,4} " 
 
-Use command /set_interval <time in seconds> to add how often you want messages?
+    Use command /set_interval <time in seconds> to add how often you want messages?
 
-Use commands /startsearch to start searching and /stop to stop search
+    Use commands /startsearch to start searching and /stop to stop search
 
-Use command /start to restart the bot
+    Use command /start to restart the bot
 
-Use command /given_subred_name to see the subreddit in action
+    Use command /given_subred_name to see the subreddit in action
 
-Use command /given_interval to see the internal set
+    Use command /given_interval to see the internal set
 
-Use command /given_regex to see the regex given
+    Use command /given_regex to see the regex given
 
-Use command /add-parameters to add more parameters
+    Use command /add-parameters to add more parameters
 
-Use command /given_parameters to see the parameters given
+    Use command /given_parameters to see the parameters given
 
-Use command /delete_parameters to delete all parameters
+    Use command /delete_parameters to delete all parameters
 
-There are default values for above, but do check spellings and etc if doesn't work!
-    ''')
+    There are default values for above, but do check spellings and etc if doesn't work!
+        ''')
 
             
 def parameter_search(regex,title):
@@ -142,6 +142,8 @@ def set_interval(update:Update, context: CallbackContext):
 
 def stop(update:Update, context: CallbackContext):
     update.message.reply_text( 'Stopping the search!')
+    last_post_time_available = False
+    last_post_time = 0
     context.job_queue.stop()
 
 def given_subred_name(update:Update, _: CallbackContext):
