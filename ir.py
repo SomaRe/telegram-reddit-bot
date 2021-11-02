@@ -124,18 +124,10 @@ def main():
     
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("start",start))
-    dispatcher.add_handler(CommandHandler("subreddit_name",subreddit_name))
-    dispatcher.add_handler(CommandHandler("regular_expression", regular_expression))
-    dispatcher.add_handler(CommandHandler("set_interval", set_interval))
-    dispatcher.add_handler(CommandHandler("add_parameters",add_parameters))
     dispatcher.add_handler(CommandHandler("startsearch",search))
     dispatcher.add_handler(CommandHandler("stop", stop))
     dispatcher.add_handler(CommandHandler("instructions",help))
     dispatcher.add_handler(CommandHandler("given_subred_name",given_subred_name))
-    dispatcher.add_handler(CommandHandler("given_interval",given_interval))
-    dispatcher.add_handler(CommandHandler("given_regex",given_regex))
-    dispatcher.add_handler(CommandHandler("given_parameters",given_parameters))
-    dispatcher.add_handler(CommandHandler("delete_parameters",delete_parameters))
 
     # Start the Bot
     updater.start_polling()
