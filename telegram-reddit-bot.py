@@ -10,6 +10,7 @@ TOKEN = keys.TELE_TOKEN
 
 # global subred_name, regex, interval
 # PORT = int(os.environ.get('PORT', '8443'))
+job = ""
 subred_name = "CanadianHardwareSwap"
 regex = "[\d]{4,5}"
 interval = 300
@@ -142,9 +143,10 @@ def set_interval(update:Update, context: CallbackContext):
 
 def stop(update:Update, context: CallbackContext):
     update.message.reply_text( 'Stopping the search!')
+    global last_post_time_available,last_post_time
     last_post_time_available = False
     last_post_time = 0
-    context.job_queue.stop()
+    context.job_queue.jobs()[0].schedule_removal()
 
 def given_subred_name(update:Update, _: CallbackContext):
     update.message.reply_text("Subreddit in action: "+subred_name)
