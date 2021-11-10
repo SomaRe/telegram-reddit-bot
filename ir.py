@@ -11,7 +11,7 @@ TOKEN = keys.TELE_TOKEN
 # global subred_name, regex, interval
 # PORT = int(os.environ.get('PORT', '8443'))
 subred_name = "IndianGaming"
-interval = 300
+interval = 10
 last_post_time_available = False
 last_post_time = 0
 
@@ -70,10 +70,10 @@ def get_from_reddit(context: CallbackContext):
     if(last_post_time_available == False):
         for submission in reddit.subreddit(subred_name).new(limit=None):
             flair = submission.link_flair_text
-            if (flair == "Sale" or ("rptech" in submission.title.lower().replace(" ",""))):
+            if ((flair == "Sale" or flair == "Giveaway") or ("rptech" in submission.title.lower().replace(" ",""))):
                 last_post_time = submission.created_utc
                 last_post_time_available = True
-                context.bot.send_message(job.context, text = submission.url)
+                context.bot.send_message(job.context, text = submission.permalink)
                 break
     else:
         Arr = []
@@ -81,8 +81,8 @@ def get_from_reddit(context: CallbackContext):
             flair = submission.link_flair_text
             post_time = submission.created_utc
             if(post_time > last_post_time):
-                if (flair == "Sale" or ("rptech" in submission.title.lower().replace(" ",""))):
-                    Arr.append([submission.url,post_time])
+                if ((flair == "Sale" or flair == "Giveaway") or ("rptech" in submission.title.lower().replace(" ",""))):
+                    Arr.append([submission.permalink,post_time])
             else:
                 Arr.reverse()
                 for link,pt in Arr:
