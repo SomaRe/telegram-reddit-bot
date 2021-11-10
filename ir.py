@@ -73,7 +73,7 @@ def get_from_reddit(context: CallbackContext):
             if ((flair == "Sale" or flair == "Giveaway") or ("rptech" in submission.title.lower().replace(" ",""))):
                 last_post_time = submission.created_utc
                 last_post_time_available = True
-                context.bot.send_message(job.context, text = submission.permalink)
+                context.bot.send_message(job.context, text = "www.reddit.com"+submission.permalink)
                 break
     else:
         Arr = []
@@ -82,7 +82,7 @@ def get_from_reddit(context: CallbackContext):
             post_time = submission.created_utc
             if(post_time > last_post_time):
                 if ((flair == "Sale" or flair == "Giveaway") or ("rptech" in submission.title.lower().replace(" ",""))):
-                    Arr.append([submission.permalink,post_time])
+                    Arr.append(["www.reddit.com"+submission.permalink,post_time])
             else:
                 Arr.reverse()
                 for link,pt in Arr:
